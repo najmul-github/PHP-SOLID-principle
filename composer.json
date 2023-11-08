@@ -1,0 +1,14 @@
+{
+    "name": "illuminate-example/eloquent",
+    "description": "Implementation of Database Queries with illuminate and Eloquent",
+    "type": "project",
+    "require": {
+        "php": "^8.1",
+        "ext-pdo": "*",
+        "illuminate/database": "^10.30"
+    },
+    "autoload": {
+        "psr-4": {},
+        "files": ["config/database.php"]
+    }
+}
