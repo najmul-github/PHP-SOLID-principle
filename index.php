@@ -1,31 +1,27 @@
 <?php
 // Load the dependencies
 require_once 'vendor/autoload.php';
+use Services\DatabaseService;
+use Services\QuestionService;
+use Formatters\QuestionFormatter;
+use Repositories\ResponseRepository;
 
-use Illuminate\Database\Capsule\Manager as DB;
-
-$db = new DB;
-$db->addConnection([
-    'driver'    => DB_CONNECTION,
-    'host'      => DB_HOST,
-    'database'  => DB_DATABASE,
-    'username'  => DB_USERNAME,
-    'password'  => DB_PASSWORD,
-    'charset'   => 'utf8',
-    'collation' => 'utf8_unicode_ci',
-    'prefix'    => '',
-]);
-$db->setAsGlobal();
-
+DatabaseService::createConnection();
 function get() {
-    $data = [];
-    $data['success'] = true;
+    // Create a new instance of the QuestionService, which implements the QuestionServiceContract
+    $question   =   new QuestionService();
 
-    $questions = DB::table('questions')->get();
+    // Attempt to retrieve questions with answers using the service
+    $questions  =   $question->getQuestionsWithAnswers();
+    
+    // Structure questions and their answers.
+    $formate   =   new QuestionFormatter($questions);
+    $result = $formate->structureQuestions($formate);
 
-    $data['questions'] = $questions;
+    $response = new ResponseRepository();
+    $jsonResponse = $response->success($result);
 
-    return json_encode($data);
+    return json_encode($jsonResponse);
 }
 
 echo get();
